@@ -39,7 +39,10 @@ builder.Services.AddAuthentication(u =>
 });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 var app = builder.Build();
 
@@ -61,13 +64,35 @@ app.MapControllers();
 
 app.Run();
 
-internal sealed class BearerSecturitySchemeTransformer(
+internal sealed class BearerSecuritySchemeTransformer(
     Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider authenticationSchemeProvider) : IOpenApiDocumentTransformer
 {
     public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
         var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
-        if (authenticationSchemes.Any())
+        if (authenticationSchemes.Any(authScheme => authScheme.Name == JwtBearerDefaults.AuthenticationScheme))
+        {
+            var requirement = new Dictionary<string, OpenApiSecurityScheme>
+            {
+                [JwtBearerDefaults.AuthenticationScheme] = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    In = ParameterLocation.Header,
+                    BearerFormat = "JWT",
+                }
+            };
+            
+            document.Components ??= new OpenApiComponents();
+            document.Components.SecuritySchemes = requirement;
+        }
+
+        document.Info = new()
+        {
+            Title = "HP Foods API",
+            Version = "1.0",
+            Description = "Simple example ASP.NET Core Web API",
+        };
     }
 }
