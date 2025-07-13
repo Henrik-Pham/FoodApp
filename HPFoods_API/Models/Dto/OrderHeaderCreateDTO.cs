@@ -19,5 +19,5 @@ public class OrderHeaderCreateDTO
     public string Status { get; set; } = string.Empty;
     public int TotalItems { get; set; }
     
-    public List<OrderDetailsCreateDTO> OrderDetails { get; set; } = new();
+    public List<OrderDetailsCreateDTO> OrderDetailsDTO { get; set; } = new();
 }
