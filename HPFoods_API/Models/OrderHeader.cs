@@ -18,7 +18,7 @@ public class OrderHeader
     // Add foreign key to an existing user
     public string ApplicationUserId { get; set; } = string.Empty;
     [ForeignKey("ApplicationUserId")]
-    public ApplicationUser ApplicationUser { get; set; } = new ();
+    public ApplicationUser? ApplicationUser { get; set; }
     
     public Double OrderTotalPrice { get; set; }
     public string Status { get; set; } = string.Empty;

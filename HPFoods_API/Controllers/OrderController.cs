@@ -78,7 +78,7 @@ public class OrderController : ControllerBase
                 PickupName = orderHeaderDTO.PickupName,
                 PickupPhoneNumber = orderHeaderDTO.PickupPhoneNumber,
                 PickupEmail = orderHeaderDTO.PickupEmail,
-                OrderDate = DateTime.Now,
+                OrderDate = DateTime.UtcNow,
                 OrderTotalPrice = orderHeaderDTO.OrderTotalPrice,
                 Status = StaticDetail.status_confirmed,
                 TotalItems = orderHeaderDTO.TotalItems,
